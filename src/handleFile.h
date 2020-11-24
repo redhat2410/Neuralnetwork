@@ -9,7 +9,7 @@ static float sample[3][1000];
 class File{
     public:
     
-    static void getSample(char* path)
+    static void getSample(const char* path)
     {
         char ch;
         int idx = 0, count = 0;
