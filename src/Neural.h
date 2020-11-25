@@ -27,7 +27,7 @@ class Node{
 class Neural{
     public:
     //Hàm tạo của lớp Neural
-    Neural(float* input, float* weigth, int n_input);
+    Neural(float* input, float* weigth, int n_input, int n_output);
     //Hàm propagation
     float propagation(void);
     //Hàm back_propagation
@@ -36,6 +36,7 @@ class Neural{
     float* _input;
     float* _weigth;
     int _n_input;
+    int _n_output;
 };
 
 

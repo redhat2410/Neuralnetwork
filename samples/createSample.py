@@ -14,12 +14,28 @@ def create_sample(path, num):
     for i in range(num):
         t_list.append(a[i])
         t_list.append(b[i])
-        result = 0
+        lg = 0
+        sm = 0
+        eq = 0
+
         if a[i] > b[i]:
-            result = 1
+            lg = 1
+            sm = 0
+            eq = 0
+        elif a[i] < b[i]:
+            lg = 0
+            sm = 1
+            eq = 0
+        elif a[i] == b[i]:
+            lg = 0
+            sm = 0
+            eq = 1
         else:
-            result = 0
-        t_list.append(result)
+            pass
+
+        t_list.append(lg)
+        t_list.append(sm)
+        t_list.append(eq)
         file.writelines(str(t_list) + '\n')
         t_list.clear()
 

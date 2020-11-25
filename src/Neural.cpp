@@ -21,10 +21,11 @@ float Node::transfer_deriactive(float output){
     return output * (1.0f - output);
 }
 
-Neural::Neural(float* input, float* weigth, int n_input){
+Neural::Neural(float* input, float** weigth, int n_input, int n_output){
     this->_input = input;
     this->_weigth = weigth;
     this->_n_input = n_input;
+    this->_n_output = n_output;
 }
 
 float Neural::propagation(void){
@@ -48,7 +49,6 @@ float* Neural::back_propagation( float output, float target){
     for(int i = 0; i < this->_n_input; i++){
         new_weigth[i] = this->_weigth[i] + ( gama * this->_input[i] );
 
-        printf("%f\n", new_weigth[i]);
     }
     return new_weigth;
 }
