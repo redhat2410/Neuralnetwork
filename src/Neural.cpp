@@ -21,34 +21,52 @@ float Node::transfer_deriactive(float output){
     return output * (1.0f - output);
 }
 
-Neural::Neural(float* input, float** weigth, int n_input, int n_output){
+Neural::Neural(float* input, float* weigth, int n_input, int n_output){
     this->_input = input;
     this->_weigth = weigth;
     this->_n_input = n_input;
     this->_n_output = n_output;
 }
 
-float Neural::propagation(void){
-    Node node = Node(this->_n_input);
+float* Neural::propagation(void){
 
-    float activation = node.activate(this->_input, this->_weigth);
+    float* output = (float*)malloc(this->_n_output * sizeof(float));
 
-    float output = node.transfer(activation);
+    for(int i = 0; i < this->_n_output; i++){
+        Node node = Node(this->_n_input);
 
+        float* weigth_branch = (float*)malloc(this->_n_input * sizeof(float));
+        int step = i * this->_n_input;
+        printf("%d ", step);
+        memcpy(weigth_branch, &this->_weigth[step], this->_n_input * sizeof(float));
+        printf("%f %f\n",weigth_branch[0], weigth_branch[1]);
+        float activation = node.activate(this->_input, weigth_branch);
+
+        output[i] = node.transfer(activation);
+
+    }
+    printf("\n");
     return output;
 }
 
-float* Neural::back_propagation( float output, float target){
+float* Neural::back_propagation(float* output, float* target){
     float* new_weigth;
-    Node node = Node(this->_n_input);
-    
-    new_weigth = (float*)malloc(this->_n_input * sizeof(float));
 
-    float gama = node.transfer_deriactive(output) * (target - output);
+    for(int i = 0; i < this->_n_output; i++){
+        Node node = Node(this->_n_input);
 
-    for(int i = 0; i < this->_n_input; i++){
-        new_weigth[i] = this->_weigth[i] + ( gama * this->_input[i] );
+        new_weigth = (float*)malloc((this->_n_input * this->_n_output) * sizeof(float));
 
+        float gama = node.transfer_deriactive(output[i]) * (target[i] - output[i]);
+
+        for(int j = 0; j < this->_n_input; j++){
+            int step = (i * this->_n_input) + j;
+            printf("%d ", step);
+            new_weigth[step] = this->_weigth[step] + (gama * this->_input[i]);
+            
+        }
+        printf("\n=======\n\n");
     }
+
     return new_weigth;
 }
