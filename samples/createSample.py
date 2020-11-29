@@ -1,32 +1,34 @@
 import sys
 import numpy as np
-from numpy import random
-
+import random
 
 def create_sample(path, num):
-    a = random.rand(num)
-    b = random.rand(num)
+
 
     t_list = []
 
     file = open(path, 'w')
 
     for i in range(num):
-        t_list.append(a[i])
-        t_list.append(b[i])
+
+        a = random.uniform(0.001, 10)
+        b = random.uniform(0.001, 10)
+
+        t_list.append(a)
+        t_list.append(b)
         lg = 0
         sm = 0
         eq = 0
 
-        if a[i] > b[i]:
+        if a > b:
             lg = 1
             sm = 0
             eq = 0
-        elif a[i] < b[i]:
+        elif a < b:
             lg = 0
             sm = 1
             eq = 0
-        elif a[i] == b[i]:
+        elif a == b:
             lg = 0
             sm = 0
             eq = 1

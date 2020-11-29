@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 FILE* fptr;
-static float sample[5][10000];
+static float sample[5][1000000];
 
 class File{
     public:
@@ -33,5 +33,19 @@ class File{
                 memset(str, 0, 100);
             }
         }
+    }
+
+    static void writeWeigth(const char* path, float* weight, int length){
+        fptr = fopen(path, "w+");
+
+        for(int i = 0; i < length; i++){
+            fprintf(fptr, "%f\n", weight[i]);
+        }
+
+        fclose(fptr);
+    }
+
+    static float* loadWeigth(const char* path){
+        
     }
 };
