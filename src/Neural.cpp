@@ -26,6 +26,7 @@ Neural::Neural(float* input, int n_input, int n_output){
     this->_input = input;
     this->_n_input = n_input;
     this->_n_output = n_output;
+    this->_output = NULL;
 
     this->_initWeigth();
 }
@@ -34,6 +35,9 @@ Neural::Neural(int n_input, int n_output){
     srand(time(NULL));
     this->_n_input = n_input;
     this->_n_output = n_output;
+
+    this->_input = NULL;
+    this->_output = NULL;
 
     this->_initWeigth();
 }
@@ -45,41 +49,94 @@ void Neural::input_data(float* data) {
 
 void Neural::_initWeigth(void){
     //Hàm khởi tạo trọng số trong mạng neural
-    //số weigth cần khởi tạo phụ thuộc vào thông sô n_input và n_output
-    this->_weigth = (float*)malloc(this->_n_input * sizeof(float));
+    //Cấp phát bộ nhớ cho mảng 2 chiều cho _weigth
+    this->_weigth = (float**)malloc(this->_n_output * sizeof(float*)); //cấp phát bộ nhớ cho hàng
+    //cấp phát bộ nhớ cho cột
+    for(int i = 0; i < this->_n_output; i++)
+        this->_weigth[i] = (float*)malloc(this->_n_input * sizeof(float));
 
-    for(int i = 0; i < this->_n_input; i++) this->_weigth[i] = this->_f_rand(0.0f, 1.0f);
-}
+    //Sau khi cấp phát bộ nhớ thành công thì khởi tạo dữ liệu ngẫu nhiên cho mảng
 
-float* Neural::getWeigth(void) { return this->_weigth; }
-
-void Neural::setWeigth(float* weigth){
-    memcpy(this->_weigth, weigth, this->_n_input * sizeof(float));
-}
-
-float Neural::propagation(void){
-    Node node = Node(this->_n_input);
-
-    float activation = node.activate(this->_input, this->_weigth);
-
-    float output = node.transfer(activation);
-
-    return output;
-}
-
-float* Neural::back_propagation( float output, float target){
-    float* new_weigth;
-    Node node = Node(this->_n_input);
-    
-    new_weigth = (float*)malloc(this->_n_input * sizeof(float));
-
-    float gama = node.transfer_deriactive(output) * (target - output);
-
-    for(int i = 0; i < this->_n_input; i++){
-        new_weigth[i] = this->_weigth[i] + ( gama * this->_input[i] );
-
+    for(int i = 0; i < this->_n_output; i++){
+        for(int j = 0; j < this->_n_input; j++){
+            this->_weigth[i][j] = this->_f_rand(0, 1);
+        }
     }
-    return new_weigth;
+
+}
+
+float** Neural::getWeigth(void) { return this->_weigth; }
+
+void Neural::setWeigth(float** weigth){
+    for(int i = 0; i < this->_n_output; i++)
+        memcpy(this->_weigth[i], weigth[i], this->_n_input * sizeof(float));
+}
+
+float* Neural::propagation(void){
+    try{
+        //cấp phát vùng nhớ cho output
+        this->_output = (float*)malloc(this->_n_output * sizeof(float));
+        //tính giá trị của các node ngõ ra theo hàm kích hoạt sigmoid
+        for(int i = 0; i < this->_n_output; i++){
+            Node node = Node(this->_n_input);
+
+            float activation = node.activate(this->_input, this->_weigth[i]);
+
+            this->_output[i] = node.transfer(activation);
+        }
+        return this->_output;
+    }
+    catch(const char* msg)
+    {
+        printf("%s", msg);
+        return NULL;
+    }
+}
+
+float** Neural::back_propagation(float* output, float* target){
+    //Cấp phát bộ nhớ cho giá trị trọng số mới
+    float** t_weigth = (float**)malloc(this->_n_output * sizeof(float*));
+
+    for(int i = 0; i < this->_n_output; i++)
+        t_weigth[i] = (float*)malloc(this->_n_input * sizeof(float));
+    /****************************************/
+    for(int i = 0; i < this->_n_output; i++){
+        Node node = Node(this->_n_input);
+        //thực hiện tính sai số error
+        float gama = node.transfer_deriactive(output[i]) * (target[i] - output[i]);
+        //cập nhật lại trọng số mới cho mạng
+        for(int j = 0; j < this->_n_input; j++){
+            t_weigth[i][j] = this->_weigth[i][j] + (gama * this->_input[j]);
+        }
+    }
+    //copy dữ liệu
+    for(int i = 0; i < this->_n_output; i++)
+        memcpy(this->_weigth[i], t_weigth[i], this->_n_input * sizeof(float));
+    
+    return this->_weigth;
+}
+
+float** Neural::back_propagation(float* target){
+    //Cấp phát bộ nhớ cho giá trị trọng số mới
+    float** t_weigth = (float**)malloc(this->_n_output * sizeof(float*));
+
+    for(int i = 0; i < this->_n_output; i++)
+        t_weigth[i] = (float*)malloc(this->_n_input * sizeof(float));
+    /****************************************/
+    for(int i = 0; i < this->_n_output; i++){
+        Node node = Node(this->_n_input);
+        //thực hiện tính sai số error
+        float gama = node.transfer_deriactive(this->_output[i]) * (target[i] - this->_output[i]);
+        //cập nhật lại trọng số mới cho mạng
+        for(int j = 0; j < this->_n_input; j++){
+            t_weigth[i][j] = this->_weigth[i][j] + (gama * this->_input[j]);
+        }
+    }
+    //copy dữ liệu
+    for(int i = 0; i < this->_n_output; i++)
+        memcpy(this->_weigth[i], t_weigth[i], this->_n_input * sizeof(float));
+    
+    return this->_weigth;   
 }
 
 float Neural::_f_rand(float min, float max){

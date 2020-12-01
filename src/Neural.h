@@ -35,22 +35,26 @@ class Neural{
     //Hàm input thực hiện truyền dữ liệu ngõ vào của mạng
     void input_data(float* data);
     //Hàm propagation
-    float propagation(void);
+    float* propagation(void);
     //Hàm back_propagation
-    float* back_propagation(float output, float target);
+    float** back_propagation(float* output, float* target);
+    float** back_propagation(float* target);
     //Hàm getWeigth
-    float* getWeigth(void);
+    float** getWeigth(void);
     //Hàm setWeigth
-    void setWeigth(float* weigth);
+    void setWeigth(float** weigth);
+    //void dispose giải phóng vùng nhớ con trỏ
+    void dispose(void);
 
     private:
     //Hàm init weigth
     void _initWeigth(void);
     //Hàm f_rand cho phép tạo giá trị số thực ngẫu nhiên
     float _f_rand(float min, float max);
-
+    //Các biến local được sử dụng trong chương trình
     float* _input;
-    float* _weigth;
+    float* _output;
+    float** _weigth;
     int _n_input;
     int _n_output;
 };

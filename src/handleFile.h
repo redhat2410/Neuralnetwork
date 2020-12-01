@@ -39,13 +39,38 @@ class File{
         fptr = fopen(path, "w+");
 
         for(int i = 0; i < length; i++){
-            fprintf(fptr, "%f\n", weight[i]);
+            fprintf(fptr, "%f ", weight[i]);
         }
-
-        fclose(fptr);
     }
 
-    // static float* loadWeigth(const char* path){
-        
-    // }
+    static void writeWeigth(const char* path, float** weigth, int row, int column){
+        fptr = fopen(path, "w+");
+
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < column; j++){
+                fprintf(fptr, "%f ", weigth[i][j]);
+            }
+            fprintf(fptr, "\n");
+        }
+    }
+
+    static float** loadWeigth(const char* path, int row, int column){
+        char ch;
+        int idx = 0, count = 0;
+        int _row = 0;
+        char str[100];
+        fptr = fopen(path, "r");
+        memset(str, 0, 100);
+        while((ch = fgetc(fptr)) != EOF){
+            if(ch != '\n'){
+                str[idx++] = ch;
+                _row++;
+            }
+            else{
+                idx = 0;
+                
+                memset(str, 0, 100);
+            }
+        }
+    }
 };

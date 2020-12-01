@@ -4,6 +4,9 @@
 
 #define TOTAL_SIZE  1000000
 
+#define NUMBER_INPUT    2
+#define NUMBER_OUTPUT   2
+
 int main(void){
     File::getSample("../samples/samples.csv");
 
@@ -12,24 +15,17 @@ int main(void){
 
     uint16_t per = TOTAL_SIZE / 100;
 
-    Neural neural = Neural(2, 1);
-    Neural neural_2 = Neural(2, 1);
+    Neural neural = Neural(NUMBER_INPUT, NUMBER_OUTPUT);
 
     for(int i = 0; i < TOTAL_SIZE; i++){
         float input[2] = { sample[0][i], sample[1][i] };
         float target[3] =  { sample[2][i], sample[3][i], sample[4][i] };
 
         neural.input_data(input);
-        neural_2.input_data(input);
 
-        float output = neural.propagation();
-        float output_2 = neural_2.propagation();
+        (void)neural.propagation();
 
-        float* new_weigth_1 = neural.back_propagation(output, target[0]);
-        float* new_weigth_2 = neural_2.back_propagation(output_2, target[1]);
-
-        neural.setWeigth(new_weigth_1);
-        neural_2.setWeigth(new_weigth_2);
+        (void)neural.back_propagation(target);
 
         if(per != 0){
             if((i % per) == 0){
@@ -39,10 +35,11 @@ int main(void){
 
     }
 
-    // printf("Write file \"weight.data\" ...");
-    // File::writeWeigth("weigth.data", weigth_1, n_input * n_output);
-    // File::writeWeigth("weigth.data", weigth_2, n_input * n_output);
-    // printf(" Done.\n");
+    float** new_weigth = neural.getWeigth();
+
+    printf("Write file \"weight.data\" ...");
+    File::writeWeigth("weigth.data", new_weigth, NUMBER_OUTPUT, NUMBER_INPUT);
+    printf(" Done.\n");
 
     printf("====TESTING====\n");
     int option = 0;
@@ -53,20 +50,24 @@ int main(void){
 
     float input[2] = { 0.05f, 0.1f };
 
+
+
     while(option == 1){
-        for(int i = 0; i < 2; i++){
+        for(int i = 0; i < NUMBER_INPUT; i++){
             printf("Input %d: ", i + 1);
             scanf("%f", &input[i]);
         }
+        Neural neural_test = Neural(NUMBER_INPUT, NUMBER_OUTPUT);
 
-        neural.input_data(input);
-        neural_2.input_data(input);
+        neural_test.setWeigth(new_weigth);
+        
+        neural_test.input_data(input);
 
-        float t_output = neural.propagation();
-        float t_output_2 = neural_2.propagation();
+        float* t_output = neural_test.propagation();
 
-        printf("Output 1: %f\n", t_output);
-        printf("Output 2: %f\n", t_output_2);
+        for(int i = 0; i < NUMBER_OUTPUT; i++){
+            printf("Output %d: %f\n", i + 1, t_output[i]);
+        }
 
         printf("1. Test\n");
         printf("2. Exit\n");
