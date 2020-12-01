@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
+// #include <cstdlib>
 
 class Node{
     public:
@@ -27,36 +29,30 @@ class Node{
 class Neural{
     public:
     //Hàm tạo của lớp Neural
-    // Neural(float* input, float* weigth, int n_input, int n_output);
-    Neural(float* input, float* weigth, int n_input, int n_ouptut);
-    Neural(float* input, float* weigth_hidden_1, float* weigth_hidden_2, float* weigth_output, int n_input);
+    Neural(float* input, int n_input, int n_output);
+    Neural(int n_input, int n_output);
 
+    //Hàm input thực hiện truyền dữ liệu ngõ vào của mạng
+    void input_data(float* data);
     //Hàm propagation
-    // float* propagation(void);
     float propagation(void);
-    float propagation_level2(void);
-
     //Hàm back_propagation
-    // float* back_propagation(float* output, float* target);
     float* back_propagation(float output, float target);
-    void back_propagation_level2(float output, float target);
-
-    float* weigth_hidden_1;
-    float* weigth_hidden_2;
-    float* weigth_output;
+    //Hàm getWeigth
+    float* getWeigth(void);
+    //Hàm setWeigth
+    void setWeigth(float* weigth);
 
     private:
+    //Hàm init weigth
+    void _initWeigth(void);
+    //Hàm f_rand cho phép tạo giá trị số thực ngẫu nhiên
+    float _f_rand(float min, float max);
+
     float* _input;
     float* _weigth;
-    float* _weigth_hidden_1;
-    float* _weigth_hidden_2;
-    float* _weigth_output;
     int _n_input;
     int _n_output;
-    int _n_hidden;
-
-    float _hidden_1_activation;
-    float _hidden_2_activation;
 };
 
 
