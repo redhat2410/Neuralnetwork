@@ -45,7 +45,7 @@ class File{
         fclose(fptr);
     }
 
-    static float* loadWeigth(const char* path){
+    // static float* loadWeigth(const char* path){
         
-    }
+    // }
 };
