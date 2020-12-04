@@ -59,5 +59,22 @@ class Neural{
     int _n_output;
 };
 
+class NeuralwithHidden{
+    public:
+    NeuralwithHidden(float input);
+
+    float propagation(void);
+
+    void back_propagation(float output, float target);
+
+    private:
+    void _initWeigth(void);
+    float _f_rand(float min, float max);
+    float _input;
+    float* _weigth_hidden;
+    float* _weigth_output;
+    float* _hidden;
+};
+
 
 #endif

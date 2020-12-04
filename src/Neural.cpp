@@ -143,3 +143,88 @@ float Neural::_f_rand(float min, float max){
     float scale = (float) (rand()) / (float) (RAND_MAX);
     return min + scale * (max - min);
 }
+
+void Neural::dispose(void){
+    free(this->_input);
+    free(this->_output);
+    for(int i = 0; i < this->_n_output; i++) free(this->_weigth[i]);
+}
+
+
+/**************** Class NeuralwithHidden ****************/
+
+NeuralwithHidden::NeuralwithHidden(float input){
+    this->_input = input;
+
+    this->_initWeigth();
+}
+
+void NeuralwithHidden::_initWeigth(void){
+    this->_weigth_hidden = (float*)malloc(2 * sizeof(float));
+    this->_weigth_output = (float*)malloc(2 * sizeof(float));
+
+    printf("init weigth\n");
+    for(int i = 0; i < 2; i++){
+        this->_weigth_hidden[i] = this->_f_rand(0, 1);
+        printf("%f ", this->_weigth_hidden[i]);
+    }
+    printf("\n");
+    for(int i = 0; i < 2; i++){
+        this->_weigth_output[i] = this->_f_rand(0, 1);
+        printf("%f ", this->_weigth_output[i]);
+    }
+    printf("\n");
+}
+
+float NeuralwithHidden::_f_rand(float min, float max){
+    float scale = (float)(rand()) / (float)(RAND_MAX);
+    return min + scale * (max - min);
+}
+
+float NeuralwithHidden::propagation(void){
+    Node node_hidden_1 = Node(1);
+    Node node_hidden_2 = Node(1);
+    Node node_output = Node(2);
+
+    this->_hidden = (float*)malloc(2 * sizeof(float));
+
+    float hdd_1 = node_hidden_1.activate(&this->_input, &this->_weigth_hidden[0]);
+    float hidden_1 = node_hidden_1.transfer(hdd_1);
+
+    float hdd_2 = node_hidden_2.activate(&this->_input, &this->_weigth_hidden[1]);
+    float hidden_2 = node_hidden_2.transfer(hdd_2);
+
+    float hidden[2] = { hidden_1, hidden_2 };
+
+    memcpy(this->_hidden, hidden, 2 * sizeof(float));
+
+    float out = node_output.activate(hidden, this->_weigth_output);
+    float output = node_output.transfer(out);
+
+    return output;
+}
+
+void NeuralwithHidden::back_propagation(float output, float target){
+    Node node_out = Node(2);
+    Node node_hidden_1 = Node(1);
+    Node node_hidden_2 = Node(1);
+    
+    float gama_out = node_out.transfer_deriactive(output) * (target - output);
+    
+    this->_weigth_output[0] = this->_weigth_output[0] + gama_out * this->_hidden[0];
+    this->_weigth_output[1] = this->_weigth_output[1] + gama_out * this->_hidden[1];
+
+    float gama_hidden_1 = node_hidden_1.transfer_deriactive(this->_hidden[0]) * gama_out * this->_weigth_output[0];
+    float gama_hidden_2 = node_hidden_1.transfer_deriactive(this->_hidden[0]) * gama_out * this->_weigth_output[0];
+
+    this->_weigth_hidden[0] = this->_weigth_hidden[0] + gama_hidden_1 * this->_input;
+    this->_weigth_hidden[1] = this->_weigth_hidden[1] + gama_hidden_2 * this->_input;
+
+
+    printf("new weigth\n");
+
+    for(int i = 0; i < 2; i++) printf("%f ", this->_weigth_hidden[i]);
+    printf("\n");
+    for(int i = 0; i < 2; i++) printf("%f ", this->_weigth_output[i]);
+    printf("\n");
+}
