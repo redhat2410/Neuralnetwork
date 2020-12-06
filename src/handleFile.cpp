@@ -20,7 +20,7 @@ void File::getSample(const char* path, int column, int row)
     //khởi tạo mảng theo column và row
 
     File::sample = (float**)malloc(row * sizeof(float*));
-    for(int i = 0; i < column; i++)
+    for(int i = 0; i < row; i++)
         File::sample[i] = (float*)malloc(column * sizeof(float));
     
 
@@ -35,26 +35,14 @@ void File::getSample(const char* path, int column, int row)
             char* temp = (char*)malloc( (strlen(str) - 2) * sizeof(char));
             memcpy(temp, &str[1], strlen(str) - 2);
 
-            printf("%s\n", temp);
-
-            // char* token = strtok(temp, ",");
-            // for(int i = 0; i < column; i++){
-            //     if(token != NULL){
-            //         printf("%f ", atof(token));
-            //         File::sample[count][i] = atof(token);
-            //         // printf("%s ", token);//File::sample[count][i]);
-            //         token = strtok(NULL, ",");
-            //     }
-            // }
-
             char* token = strtok(temp, ",");
-            while(token != NULL){
-                printf("%f ", atof(token));
-                File::sample[count][_column++] = atof(token);
-                token = strtok(NULL, ",");
+            for(int i = 0; i < column; i++){
+                if(token != NULL){
+                    File::sample[count][i] = atof(token);
+                    token = strtok(NULL, ",");
+                }
             }
 
-            printf("\n");
             free(token);
             free(temp);
             count++;

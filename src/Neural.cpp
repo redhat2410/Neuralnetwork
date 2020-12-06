@@ -159,21 +159,29 @@ NeuralwithHidden::NeuralwithHidden(float input){
     this->_initWeigth();
 }
 
+NeuralwithHidden::NeuralwithHidden(void){ 
+    this->_initWeigth();
+}
+
+void NeuralwithHidden::setInput(float input){
+    this->_input = input;
+}
+
 void NeuralwithHidden::_initWeigth(void){
     this->_weigth_hidden = (float*)malloc(2 * sizeof(float));
     this->_weigth_output = (float*)malloc(2 * sizeof(float));
 
-    printf("init weigth\n");
+    // printf("init weigth\n");
     for(int i = 0; i < 2; i++){
         this->_weigth_hidden[i] = this->_f_rand(0, 1);
-        printf("%f ", this->_weigth_hidden[i]);
+        // printf("%f ", this->_weigth_hidden[i]);
     }
-    printf("\n");
+    // printf("\n");
     for(int i = 0; i < 2; i++){
         this->_weigth_output[i] = this->_f_rand(0, 1);
-        printf("%f ", this->_weigth_output[i]);
+        // printf("%f ", this->_weigth_output[i]);
     }
-    printf("\n");
+    // printf("\n");
 }
 
 float NeuralwithHidden::_f_rand(float min, float max){
@@ -221,10 +229,16 @@ void NeuralwithHidden::back_propagation(float output, float target){
     this->_weigth_hidden[1] = this->_weigth_hidden[1] + gama_hidden_2 * this->_input;
 
 
-    printf("new weigth\n");
+    // printf("new weigth\n");
 
-    for(int i = 0; i < 2; i++) printf("%f ", this->_weigth_hidden[i]);
-    printf("\n");
-    for(int i = 0; i < 2; i++) printf("%f ", this->_weigth_output[i]);
-    printf("\n");
+    // for(int i = 0; i < 2; i++) printf("%f ", this->_weigth_hidden[i]);
+    // printf("\n");
+    // for(int i = 0; i < 2; i++) printf("%f ", this->_weigth_output[i]);
+    // printf("\n");
 }
+
+void NeuralwithHidden::setWeigth(float* weigth_hidden, float* weigth_output){
+    memcpy(this->_weigth_hidden, weigth_hidden, 2 * sizeof(float));
+    memcpy(this->_weigth_output, weigth_output, 2 * sizeof(float));
+}
+

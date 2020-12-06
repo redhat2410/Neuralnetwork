@@ -11,7 +11,7 @@ def create_sample(path, num):
 
     for i in range(num):
 
-        a = random.randint(1, 100)
+        a = random.randint(1, 1000)
 
         t_list.append(a)
 
@@ -24,7 +24,7 @@ def create_sample(path, num):
         if(count == 0) and (a != 1):
             result = 1
         else:
-            result = 0;
+            result = 0
 
         t_list.append(result)
         file.writelines(str(t_list) + '\n')
