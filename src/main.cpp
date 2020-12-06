@@ -73,29 +73,37 @@ int main(void){
 
     // }
 
-    while(1){
-        printf("Input: ");
-        float input = 0;
-        float target = 0;
-        scanf("%f", &input);
-        printf("Target: ");
-        scanf("%f", &target);
+    // while(1){
+    //     printf("Input: ");
+    //     float input = 0;
+    //     float target = 0;
+    //     scanf("%f", &input);
+    //     printf("Target: ");
+    //     scanf("%f", &target);
 
-        NeuralwithHidden neural = NeuralwithHidden(input);
+    //     NeuralwithHidden neural = NeuralwithHidden(input);
 
-        for(int i = 0; i < 5; i++){
+    //     for(int i = 0; i < 5; i++){
 
-            float output = neural.propagation();
+    //         float output = neural.propagation();
 
-            printf("output: %f\n", output);
+    //         printf("output: %f\n", output);
 
-            neural.back_propagation(output, target);
+    //         neural.back_propagation(output, target);
 
-            output = neural.propagation();
+    //         output = neural.propagation();
 
-            printf("output: %f\n", output);
+    //         printf("output: %f\n", output);
         
-        }
+    //     }
+    // }
+
+    File::getSample("../samples/prime.csv", 2, 10);
+
+    for(int i = 0; i < 10; i++){
+        for(int j = 0; j < 2; j++)
+            printf("%f ", File::sample[i][j]);
+        printf("\n");
     }
 
     return 0;
